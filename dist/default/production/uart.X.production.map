@@ -66,10 +66,10 @@ Default Scalar Model: Small
 
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
-.text                        0x200               0x120           0x1b0  (432)
-.text                        0x320                0x52            0x7b  (123)
+.text                        0x200               0x144           0x1e6  (486)
+.text                        0x344                0x58            0x84  (132)
 
-                 Total "program" memory used (bytes):          0x22b  (555) <1%
+                 Total "program" memory used (bytes):          0x26a  (618) <1%
 
 
 Auxflash Memory  [Origin = 0x7fc000, Length = 0x3ffa]
@@ -106,19 +106,19 @@ External Symbols in Program Memory (by address):
                   0x00023c                  __psv_init
                   0x000248                  __data_init
                   0x000248                  __data_init_extended
-                  0x0002fa                  __U2TXInterrupt
-                  0x00031a                  __DefaultInterrupt
-                  0x000320                  _main
+                  0x0002fa                  __U1RXInterrupt
+                  0x00033e                  __DefaultInterrupt
+                  0x000344                  _main
 
 External Symbols in Program Memory (by name):
 
-                  0x00031a                  __DefaultInterrupt
-                  0x0002fa                  __U2TXInterrupt
+                  0x00033e                  __DefaultInterrupt
+                  0x0002fa                  __U1RXInterrupt
                   0x000248                  __data_init
                   0x000248                  __data_init_extended
                   0x00023c                  __psv_init
                   0x000200                  __resetPRI
-                  0x000320                  _main
+                  0x000344                  _main
 
 Memory Configuration
 
@@ -168,7 +168,7 @@ LOAD c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libfx-elf.a
                   0x000002          0x2 SHORT 0x0 ((ABSOLUTE (__reset) >> 0x10) & 0x7f)
                   0x000003          0x2 SHORT 0x0
 
-.text             0x000200        0x120
+.text             0x000200        0x144
  *(.init)
  .init            0x000200         0x48 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(crt0_extendedep.o)
                   0x000200                  __resetPRI
@@ -180,18 +180,18 @@ LOAD c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libfx-elf.a
  *(.user_init)
  *(.handle)
  *(.isr*)
- .isr.text        0x0002fa         0x20 build/default/production/newmainXC16.o
-                  0x0002fa                  __U2TXInterrupt
- .isr             0x00031a          0x4 default_isr
-                  0x00031a                  __DefaultInterrupt
+ .isr.text        0x0002fa         0x44 build/default/production/newmainXC16.o
+                  0x0002fa                  __U1RXInterrupt
+ .isr             0x00033e          0x4 default_isr
+                  0x00033e                  __DefaultInterrupt
  *(.libc)
  *(.libm)
  *(.libdsp)
  *(.lib*)
  .libpic30_crt_start_mode
-                  0x00031e          0x2 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(crt_start_mode_normalep.Meo)
-                  0x00031e                  __crt_start_mode
-                  0x00031e                  __crt_start_mode_normal
+                  0x000342          0x2 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(crt_start_mode_normalep.Meo)
+                  0x000342                  __crt_start_mode
+                  0x000342                  __crt_start_mode_normal
 
 usercode
  *(usercode)
@@ -223,26 +223,26 @@ __FUID0
 .comment
  *(.comment)
 
-.debug_info       0x000000        0xeaf
+.debug_info       0x000000       0x11b6
  *(.debug_info)
- .debug_info      0x000000        0xeaf build/default/production/newmainXC16.o
+ .debug_info      0x000000       0x11b6 build/default/production/newmainXC16.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000         0xdc
+.debug_abbrev     0x000000         0xed
  *(.debug_abbrev)
- .debug_abbrev    0x000000         0xdc build/default/production/newmainXC16.o
+ .debug_abbrev    0x000000         0xed build/default/production/newmainXC16.o
 
-.debug_line       0x000000        0x139
+.debug_line       0x000000        0x142
  *(.debug_line)
- .debug_line      0x000000        0x139 build/default/production/newmainXC16.o
+ .debug_line      0x000000        0x142 build/default/production/newmainXC16.o
 
 .debug_frame      0x000000         0x58
  *(.debug_frame)
  .debug_frame     0x000000         0x58 build/default/production/newmainXC16.o
 
-.debug_str        0x000000         0x52
+.debug_str        0x000000         0x64
  *(.debug_str)
- .debug_str       0x000000         0x52 build/default/production/newmainXC16.o
+ .debug_str       0x000000         0x64 build/default/production/newmainXC16.o
 
 .debug_loc
  *(.debug_loc)
@@ -2974,24 +2974,24 @@ OUTPUT(dist/default/production/uart.X.production.elf elf32-pic30)
 LOAD default_isr
 
 .debug_pubtypes
-                  0x000018        0x11b
+                  0x000018        0x155
  .debug_pubtypes
-                  0x000018        0x11b build/default/production/newmainXC16.o
+                  0x000018        0x155 build/default/production/newmainXC16.o
 
 __c30_signature
-                  0x000133         0x12
+                  0x00016d         0x12
  __c30_signature
-                  0x000133          0x6 build/default/production/newmainXC16.o
+                  0x00016d          0x6 build/default/production/newmainXC16.o
  __c30_signature
-                  0x000139          0x6 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(crt0_extendedep.o)
+                  0x000173          0x6 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(crt0_extendedep.o)
  __c30_signature
-                  0x00013f          0x6 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(data_init_extended.o)
+                  0x000179          0x6 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(data_init_extended.o)
 
-.ivt._U2TXInterrupt
-                  0x000052          0x2
- .ivt._U2TXInterrupt
-                  0x000052          0x2 build/default/production/newmainXC16.o
+.ivt._U1RXInterrupt
+                  0x00002a          0x2
+ .ivt._U1RXInterrupt
+                  0x00002a          0x2 build/default/production/newmainXC16.o
 
-.text             0x000320         0x52
- .text            0x000320         0x52 build/default/production/newmainXC16.o
-                  0x000320                  _main
+.text             0x000344         0x58
+ .text            0x000344         0x58 build/default/production/newmainXC16.o
+                  0x000344                  _main
