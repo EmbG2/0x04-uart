@@ -69,6 +69,7 @@ void tmr_wait_period(int timer);
 void tmr_wait_ms(int timer, int ms);
 int tmr_wait_period_3(int timer);
 void tmr_wait_ms_3(int timer, int ms);
+void tmr_turn(int timer, int value);
 
 
 #ifdef	__cplusplus

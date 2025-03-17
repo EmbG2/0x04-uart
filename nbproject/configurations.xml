@@ -19,8 +19,12 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>newmainXC16.c</itemPath>
+      <itemPath>timer.c</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">
