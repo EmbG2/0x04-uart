@@ -13,7 +13,7 @@
 #define BAUDRATE 9600
 #define BRGVAL (FCY / BAUDRATE) / 16 - 1
 
-#define BUFFER_SIZE 8
+#define BUFFER_SIZE 4
 
 char uart_buffer[BUFFER_SIZE];
 int buffer_head = 0;
@@ -28,8 +28,8 @@ void algorithm(){
     tmr_turn(TIMER2, 0);
 }
 
-void uart_setup(int n, int stop, int parity){
-    switch (n){
+void uart_setup(int UART_n, int stop, int parity){
+    switch (UART_n){
         case 1:
             // symbol configuration
             U1MODEbits.UARTEN   = 0;
@@ -66,7 +66,6 @@ void uart_setup(int n, int stop, int parity){
 }
 
 int main(void) {
-    
     // LED/BUTTON CONFIGURATION
     ANSELA = ANSELB = ANSELC = ANSELD = ANSELE = ANSELG = 0x0000;
     TRISAbits.TRISA0 = 0;
@@ -84,16 +83,21 @@ int main(void) {
     U1TXREG             = 'S'; // TODO remove
     
     // TIMER CONFIGURATION
-    tmr_setup_period(TIMER1, 10);   
+    tmr_setup_period(TIMER1, 10);
+    tmr_setup_period(TIMER3, 10); 
     tmr_turn(TIMER1, 1);            // turn the timer on
     IFS0bits.T1IF       = 0;        // Reset the interrupt's flag
     IEC0bits.T1IE       = 1;        // Activate TIMER2's interrupt
     
     // BUTTON INTERRUPTS
-//    RPINR0bits.INT1R    = 88;
-//    INTCON2bits.INT1EP  = 0;        // 1 = Falling edge; 0 = Rising edge
-//    IFS1bits.INT1IF     = 0;        // Reset the interrupt's flag
-//    IEC1bits.INT1IE     = 1;        // Activate TIMER2's interrupt
+    RPINR0bits.INT1R    = 88;
+    INTCON2bits.INT1EP  = 0;        // 1 = Falling edge; 0 = Rising edge
+    IFS1bits.INT1IF     = 0;        // Reset the interrupt's flag
+    IEC1bits.INT1IE     = 1;        // Activate TIMER2's interrupt
+    RPINR1bits.INT2R    = 89;
+    INTCON2bits.INT2EP  = 0;        // 1 = Falling edge; 0 = Rising edge
+    IFS1bits.INT2IF     = 0;        // Reset the interrupt's flag
+    IEC1bits.INT2IE     = 1;        // Activate TIMER2's interrupt
     
     while(1){
         algorithm();
@@ -113,8 +117,10 @@ void __attribute__((__interrupt__)) _U1RXInterrupt(void) {
     // == Critical Section ==
     char rec = U1RXREG; 
     if (U1STAbits.OERR) {  
-        U1STAbits.OERR = 0; 
+        U1STAbits.OERR = 0;
+        char_count = 0;
     }
+    char_count++;
     IFS0bits.U1RXIF = 0;
     
     // == Non-critical Section ==
@@ -141,17 +147,40 @@ void __attribute__((__interrupt__)) _U1RXInterrupt(void) {
 void __attribute__((__interrupt__, auto_psv)) _T1Interrupt(void) {
     IFS0bits.T1IF = 0;
     a ++;
-    if (blink_enabled && a >= 50) {
+    if (blink_enabled && a >= 20) {
         a = 0;
         LATGbits.LATG9 ^= 1;
     }
 }
 
-//void __attribute__((__interrupt__, auto_psv)) _INT1Interrupt(void) { // this shit has bouncing
-//    IFS1bits.INT1IF = 0;            // Reset the flag of the interrupt
-//    t2_status = PORTEbits.RE8;
-//    if (t2_status && !t2_status_prev){
-//        LATGbits.LATG9 ^= 1;
-//    }
-//    t2_status_prev = t2_status;
-//}
+void __attribute__((__interrupt__, auto_psv)) _INT1Interrupt(void) {
+    IFS1bits.INT1IF = 0;            // Reset the flag of the interrupt
+    IFS0bits.T3IF = 0;              // Reset the interrupt's flag
+    IEC0bits.T3IE = 1;              // Activate TIMER1's interrupt
+    tmr_turn(TIMER3, 1);
+}
+
+void __attribute__((__interrupt__, auto_psv)) _INT2Interrupt(void) {
+    IFS1bits.INT2IF = 0;            // Reset the flag of the interrupt
+    IFS0bits.T3IF = 0;              // Reset the interrupt's flag
+    IEC0bits.T3IE = 1;              // Activate TIMER1's interrupt
+    tmr_turn(TIMER3, 1);
+}
+
+void __attribute__((__interrupt__, auto_psv)) _T3Interrupt(void) {
+    IFS0bits.T3IF = 0;              // Reset the flag of the interrupt
+    tmr_turn(3, 0);
+    if (PORTEbits.RE8){
+        U1TXREG             = 'C';
+        U1TXREG             = '=';
+        U1TXREG             = '0' + char_count / 10;
+        U1TXREG             = '0' + char_count % 10;
+    }
+    if (PORTEbits.RE9){
+        U1TXREG             = 'D';
+        U1TXREG             = '=';
+        U1TXREG             = '0' + missed_deadlines / 10;
+        U1TXREG             = '0' + missed_deadlines % 10;
+    }
+    IEC0bits.T3IE = 0;
+}

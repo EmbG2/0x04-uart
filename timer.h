@@ -40,6 +40,7 @@
 // TODO Insert declarations
 #define TIMER1 1
 #define TIMER2 2
+#define TIMER3 3
 
 // Comment a function and leverage automatic documentation with slash star star
 /**

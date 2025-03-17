@@ -53,6 +53,13 @@
              TMR2 = 0;
  //            T2CONbits.TON = 1;
              break;
+          case TIMER3:
+             T3CONbits.TON = 0;
+             T3CONbits.TCKPS = prescaler_type;
+             PR3 = period;
+             TMR3 = 0;
+ //            T2CONbits.TON = 1;
+             break;
      }
  }
  
@@ -121,6 +128,9 @@
              break;
          case TIMER2:
              T2CONbits.TON = value;
+             break;
+         case TIMER3:
+             T3CONbits.TON = value;
              break;
      }
  }
