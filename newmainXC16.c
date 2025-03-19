@@ -23,9 +23,10 @@ int char_count = 0;
 int missed_deadlines = 0;
 int blink_enabled = 1;
 int intN = 0;
+int flag_maybe_miss = 0;
 
 void algorithm(){
-    tmr_wait_ms_3(TIMER2, 7);
+    tmr_wait_ms_3(TIMER2, 10);
     tmr_turn(TIMER2, 0);
 }
 
@@ -101,15 +102,18 @@ int main(void) {
     IEC1bits.INT2IE     = 1;        // Activate TIMER2's interrupt
     
     while(1){
+        flag_maybe_miss = 0;
         algorithm();
         
-        missed_deadlines += tmr_wait_period_3(TIMER1);        
+        missed_deadlines += flag_maybe_miss;
+        tmr_wait_period_3(TIMER1);
+        // missed_deadlines +=   
     }
     
     return 0;
 }
 
-void __attribute__((__interrupt__)) _U1RXInterrupt(void) {
+void __attribute__((__interrupt__, auto_psv)) _U1RXInterrupt(void) {
     // TODO check whether to read first or clear-overflow-flag first
     // == Critical Section ==
     char rec = U1RXREG; 
@@ -148,6 +152,7 @@ void __attribute__((__interrupt__, auto_psv)) _T1Interrupt(void) {
         a = 0;
         LATGbits.LATG9 ^= 1;
     }
+    flag_maybe_miss = 1;
 }
 
 void __attribute__((__interrupt__, auto_psv)) _INT1Interrupt(void) {
