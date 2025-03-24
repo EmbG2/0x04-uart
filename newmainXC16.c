@@ -23,10 +23,9 @@ int char_count = 0;
 int missed_deadlines = 0;
 int blink_enabled = 1;
 int intN = 0;
-int flag_maybe_miss = 0;
 
 void algorithm(){
-    tmr_wait_ms_3(TIMER2, 10);
+    tmr_wait_ms_3(TIMER2, 7);
     tmr_turn(TIMER2, 0);
 }
 
@@ -89,7 +88,7 @@ int main(void) {
     tmr_setup_period(TIMER3, 10); 
     tmr_turn(TIMER1, 1);            // turn the timer on
     IFS0bits.T1IF       = 0;        // Reset the interrupt's flag
-    IEC0bits.T1IE       = 1;        // Activate TIMER2's interrupt
+    IEC0bits.T1IE       = 0;        // Activate TIMER1's interrupt
     
     // BUTTON INTERRUPTS
     RPINR0bits.INT1R    = 88;
@@ -102,12 +101,15 @@ int main(void) {
     IEC1bits.INT2IE     = 1;        // Activate TIMER2's interrupt
     
     while(1){
-        flag_maybe_miss = 0;
         algorithm();
         
-        missed_deadlines += flag_maybe_miss;
-        tmr_wait_period_3(TIMER1);
-        // missed_deadlines +=   
+        a++;
+        if (blink_enabled && a >= 20) {
+            a = 0;
+            LATGbits.LATG9 ^= 1;
+        }
+        
+        missed_deadlines += tmr_wait_period_3(TIMER1);
     }
     
     return 0;
@@ -143,16 +145,6 @@ void __attribute__((__interrupt__, auto_psv)) _U1RXInterrupt(void) {
             buffer_head = buffer_tail = 0;  // reset buffer
         }
     }
-}
-
-void __attribute__((__interrupt__, auto_psv)) _T1Interrupt(void) {
-    IFS0bits.T1IF = 0;
-    a ++;
-    if (blink_enabled && a >= 20) {
-        a = 0;
-        LATGbits.LATG9 ^= 1;
-    }
-    flag_maybe_miss = 1;
 }
 
 void __attribute__((__interrupt__, auto_psv)) _INT1Interrupt(void) {

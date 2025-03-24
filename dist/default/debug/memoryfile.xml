@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project>
-  <executable name="dist/default/production/0x04-uart.production.elf">
+  <executable name="dist/default/debug/0x04-uart.debug.elf">
     <memory name="data">
       <units>bytes</units>
       <length>53248</length>
@@ -11,8 +11,8 @@
     <memory name="program">
       <units>bytes</units>
       <length>524544</length>
-      <used>5013</used>
-      <free>519531</free>
+      <used>5091</used>
+      <free>519453</free>
     </memory>
   </executable>
 </project>
