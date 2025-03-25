@@ -96,7 +96,6 @@
                  break;
              }
              while (IFS0bits.T1IF == 0);
-             IFS0bits.T1IF = 0;
              break;
          case TIMER2:
              if (IFS0bits.T2IF) {
@@ -104,9 +103,9 @@
                  break;
              }
              while (IFS0bits.T2IF == 0);
-             IFS0bits.T2IF = 0;
              break;
      }
+     IFS0bits.T1IF = 0;
      return expired;
  }
  

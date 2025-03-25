@@ -22,6 +22,7 @@ int a = 0;
 int char_count = 0;
 int missed_deadlines = 0;
 int blink_enabled = 1;
+int intN = 0;
 
 void algorithm(){
     tmr_wait_ms_3(TIMER2, 7);
@@ -33,8 +34,8 @@ void uart_setup(int UART_n, int stop, int parity){
         case 1:
             // symbol configuration
             U1MODEbits.UARTEN   = 0;
-            U1MODEbits.STSEL    = 1;        // stop bit
-            U1MODEbits.PDSEL    = 0;        // parity
+            U1MODEbits.STSEL    = stop;        // stop bit
+            U1MODEbits.PDSEL    = parity;        // parity
             U1MODEbits.ABAUD    = 0;        // auto-baud
             U1MODEbits.BRGH     = 0;        // speed mode
             U1BRG               = BRGVAL;   // BAUD Rate Setting for 9600
@@ -48,8 +49,8 @@ void uart_setup(int UART_n, int stop, int parity){
         case 2:
             // symbol configuration
             U2MODEbits.UARTEN   = 0;
-            U2MODEbits.STSEL    = 1;        // stop bit
-            U2MODEbits.PDSEL    = 0;        // parity
+            U2MODEbits.STSEL    = stop;        // stop bit
+            U2MODEbits.PDSEL    = parity;        // parity
             U2MODEbits.ABAUD    = 0;        // auto-baud
             U2MODEbits.BRGH     = 0;        // speed mode
             U2BRG               = BRGVAL;   // BAUD Rate Setting for 9600
@@ -85,9 +86,6 @@ int main(void) {
     // TIMER CONFIGURATION
     tmr_setup_period(TIMER1, 10);
     tmr_setup_period(TIMER3, 10); 
-    tmr_turn(TIMER1, 1);            // turn the timer on
-    IFS0bits.T1IF       = 0;        // Reset the interrupt's flag
-    IEC0bits.T1IE       = 1;        // Activate TIMER2's interrupt
     
     // BUTTON INTERRUPTS
     RPINR0bits.INT1R    = 88;
@@ -99,20 +97,23 @@ int main(void) {
     IFS1bits.INT2IF     = 0;        // Reset the interrupt's flag
     IEC1bits.INT2IE     = 1;        // Activate TIMER2's interrupt
     
+    tmr_turn(TIMER1, 1);            // turn the timer on
     while(1){
         algorithm();
-        if (tmr_wait_period_3(TIMER1)) {
-            missed_deadlines++;
+        
+        a++;
+        if (blink_enabled && a >= 20) {
+            a = 0;
+            LATGbits.LATG9 ^= 1;
         }
         
-        // BUTTON BEHAVIOR HERE OR THERE TODO
-        
+        missed_deadlines += tmr_wait_period_3(TIMER1);
     }
     
     return 0;
 }
 
-void __attribute__((__interrupt__)) _U1RXInterrupt(void) {
+void __attribute__((__interrupt__, auto_psv)) _U1RXInterrupt(void) {
     // TODO check whether to read first or clear-overflow-flag first
     // == Critical Section ==
     char rec = U1RXREG; 
@@ -144,43 +145,48 @@ void __attribute__((__interrupt__)) _U1RXInterrupt(void) {
     }
 }
 
-void __attribute__((__interrupt__, auto_psv)) _T1Interrupt(void) {
-    IFS0bits.T1IF = 0;
-    a ++;
-    if (blink_enabled && a >= 20) {
-        a = 0;
-        LATGbits.LATG9 ^= 1;
-    }
-}
-
 void __attribute__((__interrupt__, auto_psv)) _INT1Interrupt(void) {
     IFS1bits.INT1IF = 0;            // Reset the flag of the interrupt
     IFS0bits.T3IF = 0;              // Reset the interrupt's flag
-    IEC0bits.T3IE = 1;              // Activate TIMER1's interrupt
+    IEC0bits.T3IE = 1;              // Activate TIMER3's interrupt
     tmr_turn(TIMER3, 1);
+    intN = 1;
+    
 }
 
 void __attribute__((__interrupt__, auto_psv)) _INT2Interrupt(void) {
     IFS1bits.INT2IF = 0;            // Reset the flag of the interrupt
     IFS0bits.T3IF = 0;              // Reset the interrupt's flag
-    IEC0bits.T3IE = 1;              // Activate TIMER1's interrupt
+    IEC0bits.T3IE = 1;              // Activate TIMER3's interrupt
     tmr_turn(TIMER3, 1);
+    intN = 2;
 }
 
 void __attribute__((__interrupt__, auto_psv)) _T3Interrupt(void) {
     IFS0bits.T3IF = 0;              // Reset the flag of the interrupt
     tmr_turn(3, 0);
-    if (PORTEbits.RE8){
-        U1TXREG             = 'C';
-        U1TXREG             = '=';
-        U1TXREG             = '0' + char_count / 10;
-        U1TXREG             = '0' + char_count % 10;
+    switch (intN) {
+        case 1: {
+            if (PORTEbits.RE8){
+                U1TXREG             = 'C';
+                U1TXREG             = '=';
+                U1TXREG             = '0' + char_count / 10;
+                U1TXREG             = '0' + char_count % 10;
+            }
+            break;
+        }
+        case 2: {
+            if (PORTEbits.RE9){
+                U1TXREG             = 'D';
+                U1TXREG             = '=';
+                U1TXREG             = '0' + missed_deadlines / 10;
+                U1TXREG             = '0' + missed_deadlines % 10;
+            }
+            break;
+        }
+        default:
+            break;
     }
-    if (PORTEbits.RE9){
-        U1TXREG             = 'D';
-        U1TXREG             = '=';
-        U1TXREG             = '0' + missed_deadlines / 10;
-        U1TXREG             = '0' + missed_deadlines % 10;
-    }
+    intN = 0;
     IEC0bits.T3IE = 0;
 }
