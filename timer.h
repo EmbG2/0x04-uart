@@ -28,8 +28,8 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef XC_HEADER_TEMPLATE_H
-#define	XC_HEADER_TEMPLATE_H
+#ifndef TIMER_H
+#define TIMER_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
@@ -41,6 +41,9 @@
 #define TIMER1 1
 #define TIMER2 2
 #define TIMER3 3
+
+/** @brief System clock frequency in Hz. */
+#define FCY 72000000UL
 
 // Comment a function and leverage automatic documentation with slash star star
 /**
@@ -84,5 +87,5 @@ extern "C" {
 }
 #endif /* __cplusplus */
 
-#endif	/* XC_HEADER_TEMPLATE_H */
+#endif	/* TIMER_H */
 

@@ -1,0 +1,20 @@
+[
+{
+  "directory": "/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/_build/uart/default",
+  "command": "/Applications/microchip/xc16/v2.10/bin/xc16-gcc -DXPRJ_default=default -I/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/cmake/uart/default/../../.. -g -mcpu=33EP512MU810 -O0 -msmart-io=1 -Wall -msfr-warn=off -mdfp=/Users/gianmarco/.mchp_packs/Microchip/dsPIC33E-GM-GP-MC-GU-MU_DFP/1.5.258/xc16 -o CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/newmainXC16.c.o -c /Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/newmainXC16.c",
+  "file": "/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/newmainXC16.c",
+  "output": "CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/newmainXC16.c.o"
+},
+{
+  "directory": "/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/_build/uart/default",
+  "command": "/Applications/microchip/xc16/v2.10/bin/xc16-gcc -DXPRJ_default=default -I/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/cmake/uart/default/../../.. -g -mcpu=33EP512MU810 -O0 -msmart-io=1 -Wall -msfr-warn=off -mdfp=/Users/gianmarco/.mchp_packs/Microchip/dsPIC33E-GM-GP-MC-GU-MU_DFP/1.5.258/xc16 -o CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/timer.c.o -c /Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/timer.c",
+  "file": "/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/timer.c",
+  "output": "CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/timer.c.o"
+},
+{
+  "directory": "/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/_build/uart/default",
+  "command": "/Applications/microchip/xc16/v2.10/bin/xc16-gcc -DXPRJ_default=default -I/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/cmake/uart/default/../../.. -g -mcpu=33EP512MU810 -O0 -msmart-io=1 -Wall -msfr-warn=off -mdfp=/Users/gianmarco/.mchp_packs/Microchip/dsPIC33E-GM-GP-MC-GU-MU_DFP/1.5.258/xc16 -o CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/uart.c.o -c /Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/uart.c",
+  "file": "/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/uart.c",
+  "output": "CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/uart.c.o"
+}
+]

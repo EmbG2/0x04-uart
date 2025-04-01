@@ -8,7 +8,6 @@
 
  #include "xc.h"
  #include "timer.h"
- #define FCY 72000000UL
  
  void tmr_setup_period(int timer, int ms) {
      unsigned int prescaler;
@@ -93,19 +92,18 @@
          case TIMER1:
              if (IFS0bits.T1IF) {
                  expired = 1;
-                 break;
+                 IFS0bits.T1IF = 0;
              }
              while (IFS0bits.T1IF == 0);
              break;
          case TIMER2:
              if (IFS0bits.T2IF) {
                  expired = 1;
-                 break;
+                 IFS0bits.T2IF = 0;
              }
              while (IFS0bits.T2IF == 0);
              break;
      }
-     IFS0bits.T1IF = 0;
      return expired;
  }
  
