@@ -86,22 +86,22 @@
      }
  }
  
- int tmr_wait_period_3(int timer){
+ int tmr_wait_period_3(int timer) {
      int expired = 0;
-     switch (timer){
+     switch (timer) {
          case TIMER1:
              if (IFS0bits.T1IF) {
-                 expired = 1;
-                 IFS0bits.T1IF = 0;
+                 expired = 1;           // Timer period expired
+                 IFS0bits.T1IF = 0;     // Clear the interrupt flag
              }
-             while (IFS0bits.T1IF == 0);
+             while (IFS0bits.T1IF == 0); // Wait for the next period
              break;
          case TIMER2:
              if (IFS0bits.T2IF) {
-                 expired = 1;
-                 IFS0bits.T2IF = 0;
+                 expired = 1;           // Timer period expired
+                 IFS0bits.T2IF = 0;     // Clear the interrupt flag
              }
-             while (IFS0bits.T2IF == 0);
+             while (IFS0bits.T2IF == 0); // Wait for the next period
              break;
      }
      return expired;
@@ -131,4 +131,3 @@
              break;
      }
  }
- 

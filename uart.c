@@ -114,10 +114,17 @@ void uart_config(int URT, int stop_bit, int parity_check){
  */
 void __attribute__((__interrupt__, auto_psv)) _U1RXInterrupt(void) {
     IFS0bits.U1RXIF = 0;
-    while (U1STAbits.URXDA && (UART1_producer_index + 1) % BUFFER_SIZE != UART1_consumer_index) {
+    while (U1STAbits.URXDA && (UART1_producer_index + 2) % BUFFER_SIZE != UART1_consumer_index) {
         UART1_receive_buffer[UART1_producer_index] = U1RXREG;
         
         UART1_producer_index = (UART1_producer_index + 1) % BUFFER_SIZE;
+
+        /*
+        * Add null terminator to the end of the string to avoid that a previous character activate a randombly a command
+        * e.g: The microcontroller receives "D1ABCDEF" and then receives "L" at the end of the buffer, so the buffer contains
+        * "D1ABCDEFL" and someone can read "LD1" and activate the command "LD1".
+        */ 
+        UART1_receive_buffer[UART1_producer_index] = '\0';
     }
     
     if (U1STAbits.OERR){

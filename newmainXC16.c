@@ -23,20 +23,40 @@ char uart_receive_buffer[BUFFER_SIZE];
 
 void algorithm();
 
-int contains_pattern(const char *buffer, const char *pattern) {
-    while (*buffer) {
-        const char *b = buffer;
-        const char *p = pattern;
-        while (*b && *p && (*b == *p)) {
-            b++;
-            p++;
-        }
-        if (!*p) {
-            return 1; // Pattern found
-        }
-        buffer++;
+int contains_pattern(const char *buffer, const char *pattern, int buffer_size, int start_index) {
+    int buffer_index = start_index;
+    int pattern_length = 0;
+
+    // Calculate the length of the pattern
+    while (pattern[pattern_length] != '\0') {
+        pattern_length++;
     }
-    return 0; // Pattern not found
+
+    // Scan the circular buffer
+    for (int i = 0; i < buffer_size; i++) {
+        int match = 1;
+        for (int j = 0; j < pattern_length; j++) {
+            // Calculate the circular index
+            int circular_index = (buffer_index + j) % buffer_size;
+
+            // Check if the character matches
+            if (buffer[circular_index] != pattern[j]) {
+                match = 0;
+                break;
+            }
+        }
+
+        // If the pattern is found, return 1
+        if (match) {
+            return 1;
+        }
+
+        // Move to the next index in the buffer
+        buffer_index = (buffer_index + 1) % buffer_size;
+    }
+
+    // If the pattern is not found, return 0
+    return 0;
 }
 
 int main(void) {
@@ -67,11 +87,11 @@ int main(void) {
     
     uart_config(URT1, 1, 0);
     
-    U1TXREG             = 'S';      // Send 'S' if everything works
+    U1TXREG             = 'F';      // Send 'L' if everything works
     
     // Timers configuration
     
-    tmr_setup_period(TIMER1, 10);
+    tmr_setup_period(TIMER1, 20);
     
     tmr_setup_period(TIMER3, 10);   // Timer to remove bouncing effect
     
@@ -84,12 +104,13 @@ int main(void) {
             a = 0;
             LATGbits.LATG9 ^= 1;
         }
+        
         uart_receive(URT1, uart_receive_buffer);
         
-        if (contains_pattern(uart_receive_buffer, "LD1")) {
+        if (contains_pattern(uart_receive_buffer, "LD1", BUFFER_SIZE, 0)) {
             LATAbits.LATA0 ^= 1;
         }
-        if (contains_pattern(uart_receive_buffer, "LD2")) {
+        if (contains_pattern(uart_receive_buffer, "LD2", BUFFER_SIZE, 0)) {
             // Stop or resume LED2 blinking
             blink_enabled = !blink_enabled;
         }
@@ -97,13 +118,13 @@ int main(void) {
         if (send_message[0]){
             char msg[4] = {'C', '=', '0' + (char_count / 10), '0' + (char_count % 10)};
             uart_transmit(URT1, msg, 4);
+            send_message[0] = 0; // Reset the flag after sending
         }
         if (send_message[1]){
             char msg[4] = {'D', '=', '0' + (missed_deadlines / 10), '0' + (missed_deadlines % 10)};
             uart_transmit(URT1, msg, 4);
+            send_message[1] = 0; // Reset the flag after sending
         }
-
-        
 
         missed_deadlines = (missed_deadlines + tmr_wait_period_3(TIMER1)) % 100;
     }
@@ -146,6 +167,6 @@ void __attribute__((__interrupt__, auto_psv)) _T3Interrupt(void) {
 }
 
 void algorithm(){
-    tmr_wait_ms_3(TIMER2, 11);
+    tmr_wait_ms_3(TIMER2, 7);
     tmr_turn(TIMER2, 0);
 }
