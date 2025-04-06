@@ -17,63 +17,20 @@ int blink_enabled = 1;
 int char_count = 0;
 int missed_deadlines = 0;
 
-int send_message[2] = {0, 0};
+char* commands[] = {
+    "LD1", // LED 1
+    "LD2", // LED 2
+    NULL
+}
 
+int command_numbers_activations[] = {0, 0};
+int save_indx_letter[] = {0, 0};
+bool stop_check[] = {false, false};
+
+int send_message[2] = {0, 0};
 char uart_receive_buffer[BUFFER_SIZE];
 
 void algorithm();
-
-int contains_pattern(const char *buffer, const char *pattern, int buffer_size, int start_index) {
-    int buffer_index = start_index;
-    int pattern_length = 0;
-
-    // Calculate the length of the pattern
-    while (pattern[pattern_length] != '\0') {
-        pattern_length++;
-    }
-
-    // Scan the circular buffer
-    for (int i = 0; i < buffer_size; i++) {
-        int match = 1;
-        for (int j = 0; j < pattern_length; j++) {
-            // Calculate the circular index
-            int circular_index = (buffer_index + j) % buffer_size;
-
-            // Check if the character matches
-            if (buffer[circular_index] != pattern[j]) {
-                match = 0;
-                break;
-            }
-        }
-
-        // If the pattern is found, return its starting index
-        if (match) {
-            return buffer_index;
-        }
-
-        // Move to the next index in the buffer
-        buffer_index = (buffer_index + 1) % buffer_size;
-    }
-
-    // If the pattern is not found, return -1
-    return -1;
-}
-
-void remove_pattern(char *buffer, int buffer_size, int start_index, int pattern_length) {
-    int end_index = (start_index + pattern_length) % buffer_size;
-
-    for (int i = 0; i < buffer_size - pattern_length; i++) {
-        int src_index = (end_index + i) % buffer_size;
-        int dest_index = (start_index + i) % buffer_size;
-        buffer[dest_index] = buffer[src_index];
-    }
-
-    // Riempie il resto del buffer con caratteri nulli (opzionale)
-    for (int i = buffer_size - pattern_length; i < buffer_size; i++) {
-        int index = (start_index + i) % buffer_size;
-        buffer[index] = '\0';
-    }
-}
 
 int main(void) {
     ANSELA = ANSELB = ANSELC = ANSELD = ANSELE = ANSELG = 0x0000;
@@ -123,20 +80,61 @@ int main(void) {
         
         char_count = (char_count + uart_receive(URT1, uart_receive_buffer)) % 100;
 
-        int pattern_index = contains_pattern(uart_receive_buffer, "LD1", BUFFER_SIZE, 0);
+        // Fix this part to use the circular buffer correctly -------------------------
 
-        if (pattern_index >= 0) {
-            LATAbits.LATA0 ^= 1;
-            remove_pattern(uart_receive_buffer, BUFFER_SIZE, pattern_index, 3);
+        int reset_idx = 0;
+        while (commands[reset_idx] != NULL) {
+            stop_check[reset_idx] = false;
+            reset_idx++;
         }
 
-        pattern_index =contains_pattern(uart_receive_buffer, "LD2", BUFFER_SIZE, 0);
+        int indx_buffer = 0;
+        while (uart_receive_buffer[indx_buffer] != '\0') { // Check starting from each buffer's letter
+            int indx_command = 0;
+            while (command[indx_command] != NULL){ // Check each command's words
+                // Skip if we have to wait the end of the next message
+                if (stop_check[indx_command]) {
+                    indx_command++;
+                    continue;
+                }
 
-        if (pattern_index >= 0) {
-            // Stop or resume LED2 blinking
-            blink_enabled = !blink_enabled;
-            remove_pattern(uart_receive_buffer, BUFFER_SIZE, pattern_index, 3);
+                bool command_found = command[indx_command][0] != '\0';
+
+                int indx_letter = 0;
+                while (command_found && command[indx_command][indx_letter + save_indx_letter[indx_command]] != '\0' ) { // Check each command's letter
+                    
+                    if (uart_receive_buffer[indx_buffer + indx_letter] == '\0'){
+                        save_indx_letter[indx_command] = indx_letter;
+                        stop_check[indx_command] = true;
+                        command_found = false;
+                        break;
+                    }
+
+                    if (uart_receive_buffer[indx_buffer + indx_letter] != command[indx_command][indx_letter + save_indx_letter[indx_command]]){ // If one letter doesn't correspond to the pattern
+                        command_found = false;
+                        break;
+                    }
+
+                    // Go for the next command's letter
+                    indx_letter++;
+                }
+                if (!stop_check[indx_command] && save_indx_letter[indx_command] != 0){
+                    save_indx_letter[indx_command] = 0;
+                }
+                if(command_found && !stop_check[indx_command]){
+                    command_numbers_activations[indx_command]++;
+                }
+
+                // Go for the next command's word
+                indx_command++;
+            }
+
+            // Go for the next buffer's letter
+            indx_buffer++;
         }
+
+        // ------------------------------------ END ------------------------------------
+
         
         if (send_message[0]){
             char msg[4] = {'C', '=', '0' + (char_count / 10), '0' + (char_count % 10)};

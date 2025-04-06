@@ -115,16 +115,9 @@ void uart_config(int URT, int stop_bit, int parity_check){
 void __attribute__((__interrupt__, auto_psv)) _U1RXInterrupt(void) {
     IFS0bits.U1RXIF = 0;
     while (U1STAbits.URXDA && (UART1_producer_index + 2) % BUFFER_SIZE != UART1_consumer_index) {
-        UART1_receive_buffer[UART1_producer_index] = U1RXREG;
         
+        UART1_receive_buffer[UART1_producer_index] = U1RXREG;
         UART1_producer_index = (UART1_producer_index + 1) % BUFFER_SIZE;
-
-        /*
-        * Add null terminator to the end of the string to avoid that a previous character activate a randombly a command
-        * e.g: The microcontroller receives "D1ABCDEF" and then receives "L" at the end of the buffer, so the buffer contains
-        * "D1ABCDEFL" and someone can read "LD1" and activate the command "LD1".
-        */ 
-        UART1_receive_buffer[UART1_producer_index] = '\0';
     }
     
     if (U1STAbits.OERR){
@@ -156,10 +149,14 @@ void __attribute__((__interrupt__, auto_psv)) _U1RXInterrupt(void) {
  */
 void __attribute__((__interrupt__, auto_psv)) _U2RXInterrupt(void) {  
     IFS1bits.U2RXIF = 0;
-    while (U2STAbits.URXDA && (UART2_producer_index + 1)  % BUFFER_SIZE != UART2_consumer_index) {
-        UART2_receive_buffer[UART2_producer_index] = U2RXREG;
+    while (U2STAbits.URXDA && (UART2_producer_index + 2)  % BUFFER_SIZE != UART2_consumer_index) {
         
+        UART2_receive_buffer[UART2_producer_index] = U2RXREG;
         UART2_producer_index = (UART2_producer_index + 1) % BUFFER_SIZE;
+    }
+
+    if (U2STAbits.OERR){
+        U2STAbits.OERR = 0;
     }
 }
 
@@ -188,21 +185,24 @@ void __attribute__((__interrupt__, auto_psv)) _U2RXInterrupt(void) {
  * }
  * @endcode
  */
-int uart_receive(int URT, char* UART_receive){
+ int uart_receive(int URT, char* UART_receive){
     int count = 0;
+    int max_count = 100;
     switch (URT) {
         case URT1:
-            while (UART1_consumer_index != UART1_producer_index && count <= 100) {
+            while (UART1_consumer_index != UART1_producer_index && count < max_count) {
                 UART_receive[count++] = UART1_receive_buffer[UART1_consumer_index];
                 UART1_consumer_index = (UART1_consumer_index + 1) % BUFFER_SIZE;
             }
+            UART_receive[count + 1] = '\0';
             break;
             
         case URT2:
-            while (UART2_consumer_index != UART2_producer_index && count <= 100) {
+            while (UART2_consumer_index != UART2_producer_index && count < max_count) {
                 UART_receive[count++] = UART2_receive_buffer[UART2_consumer_index];
                 UART2_consumer_index = (UART2_consumer_index + 1) % BUFFER_SIZE;
             }
+            UART_receive[count + 1] = '\0';
             break;
             
         default:
