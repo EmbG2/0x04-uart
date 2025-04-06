@@ -208,7 +208,7 @@ int uart_receive(int URT, char* UART_receive){
         default:
             return -1;
     }
-    return 0;
+    return count;
 }
 
 /**

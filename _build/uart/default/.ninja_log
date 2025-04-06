@@ -1,9 +1,9 @@
 # ninja log v6
-2123	2162	1743874851561501179	/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/_build/uart/default/CMakeFiles/uart_default_Bin2Hex	8ce1020eda9ecfa8
-1266	2122	1743874851560776098	uart_default_default.elf	99bd2e84c9445492
-2123	2162	1743874851561501179	CMakeFiles/uart_default_Bin2Hex	8ce1020eda9ecfa8
-2	1018	1743874565276614873	CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/newmainXC16.c.o	2d8a195038a4fe68
+994	1032	1743884169313650488	/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/_build/uart/default/CMakeFiles/uart_default_Bin2Hex	8ce1020eda9ecfa8
+494	994	1743884169313271657	uart_default_default.elf	99bd2e84c9445492
+994	1032	1743884169313650488	CMakeFiles/uart_default_Bin2Hex	8ce1020eda9ecfa8
+1	494	1743884168320647953	CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/newmainXC16.c.o	2d8a195038a4fe68
 1	7	1743505343951261643	clean	651e3628ebfa9423
-1266	2122	1743874851560776098	/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/out/uart/default.elf	99bd2e84c9445492
-2	1839	1743873570555001215	CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/uart.c.o	7ce83671e51987e8
-1	1266	1743874849440332304	CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/timer.c.o	2be72372edd6f609
+494	994	1743884169313271657	/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/out/uart/default.elf	99bd2e84c9445492
+2	493	1743884168320814285	CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/uart.c.o	7ce83671e51987e8
+1	528	1743882104106193701	CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/timer.c.o	2be72372edd6f609

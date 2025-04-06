@@ -46,17 +46,33 @@ int contains_pattern(const char *buffer, const char *pattern, int buffer_size, i
             }
         }
 
-        // If the pattern is found, return 1
+        // If the pattern is found, return its starting index
         if (match) {
-            return 1;
+            return buffer_index;
         }
 
         // Move to the next index in the buffer
         buffer_index = (buffer_index + 1) % buffer_size;
     }
 
-    // If the pattern is not found, return 0
-    return 0;
+    // If the pattern is not found, return -1
+    return -1;
+}
+
+void remove_pattern(char *buffer, int buffer_size, int start_index, int pattern_length) {
+    int end_index = (start_index + pattern_length) % buffer_size;
+
+    for (int i = 0; i < buffer_size - pattern_length; i++) {
+        int src_index = (end_index + i) % buffer_size;
+        int dest_index = (start_index + i) % buffer_size;
+        buffer[dest_index] = buffer[src_index];
+    }
+
+    // Riempie il resto del buffer con caratteri nulli (opzionale)
+    for (int i = buffer_size - pattern_length; i < buffer_size; i++) {
+        int index = (start_index + i) % buffer_size;
+        buffer[index] = '\0';
+    }
 }
 
 int main(void) {
@@ -87,11 +103,11 @@ int main(void) {
     
     uart_config(URT1, 1, 0);
     
-    U1TXREG             = 'F';      // Send 'L' if everything works
-    
+    U1TXREG             = 'G';      // Send 'G' if everything works
+
     // Timers configuration
     
-    tmr_setup_period(TIMER1, 20);
+    tmr_setup_period(TIMER1, 10);
     
     tmr_setup_period(TIMER3, 10);   // Timer to remove bouncing effect
     
@@ -105,14 +121,21 @@ int main(void) {
             LATGbits.LATG9 ^= 1;
         }
         
-        uart_receive(URT1, uart_receive_buffer);
-        
-        if (contains_pattern(uart_receive_buffer, "LD1", BUFFER_SIZE, 0)) {
+        char_count = (char_count + uart_receive(URT1, uart_receive_buffer)) % 100;
+
+        int pattern_index = contains_pattern(uart_receive_buffer, "LD1", BUFFER_SIZE, 0);
+
+        if (pattern_index >= 0) {
             LATAbits.LATA0 ^= 1;
+            remove_pattern(uart_receive_buffer, BUFFER_SIZE, pattern_index, 3);
         }
-        if (contains_pattern(uart_receive_buffer, "LD2", BUFFER_SIZE, 0)) {
+
+        pattern_index =contains_pattern(uart_receive_buffer, "LD2", BUFFER_SIZE, 0);
+
+        if (pattern_index >= 0) {
             // Stop or resume LED2 blinking
             blink_enabled = !blink_enabled;
+            remove_pattern(uart_receive_buffer, BUFFER_SIZE, pattern_index, 3);
         }
         
         if (send_message[0]){
