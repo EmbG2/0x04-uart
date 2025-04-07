@@ -20,12 +20,12 @@ int missed_deadlines = 0;
 char* commands[] = {
     "LD1", // LED 1
     "LD2", // LED 2
-    NULL
-}
+    '\0'
+};
 
 int command_numbers_activations[] = {0, 0};
 int save_indx_letter[] = {0, 0};
-bool stop_check[] = {false, false};
+int stop_check[] = {0, 0};
 
 int send_message[2] = {0, 0};
 char uart_receive_buffer[BUFFER_SIZE];
@@ -83,35 +83,35 @@ int main(void) {
         // Fix this part to use the circular buffer correctly -------------------------
 
         int reset_idx = 0;
-        while (commands[reset_idx] != NULL) {
-            stop_check[reset_idx] = false;
+        while (commands[reset_idx] != '\0') {
+            stop_check[reset_idx] = 0;
             reset_idx++;
         }
 
         int indx_buffer = 0;
         while (uart_receive_buffer[indx_buffer] != '\0') { // Check starting from each buffer's letter
             int indx_command = 0;
-            while (command[indx_command] != NULL){ // Check each command's words
+            while (commands[indx_command] != '\0'){ // Check each command's words
                 // Skip if we have to wait the end of the next message
                 if (stop_check[indx_command]) {
                     indx_command++;
                     continue;
                 }
 
-                bool command_found = command[indx_command][0] != '\0';
+                int command_found = commands[indx_command][0] != '\0';
 
                 int indx_letter = 0;
-                while (command_found && command[indx_command][indx_letter + save_indx_letter[indx_command]] != '\0' ) { // Check each command's letter
+                while (command_found && commands[indx_command][indx_letter + save_indx_letter[indx_command]] != '\0' ) { // Check each command's letter
                     
                     if (uart_receive_buffer[indx_buffer + indx_letter] == '\0'){
                         save_indx_letter[indx_command] = indx_letter;
-                        stop_check[indx_command] = true;
-                        command_found = false;
+                        stop_check[indx_command] = 1;
+                        command_found = 0;
                         break;
                     }
 
-                    if (uart_receive_buffer[indx_buffer + indx_letter] != command[indx_command][indx_letter + save_indx_letter[indx_command]]){ // If one letter doesn't correspond to the pattern
-                        command_found = false;
+                    if (uart_receive_buffer[indx_buffer + indx_letter] != commands[indx_command][indx_letter + save_indx_letter[indx_command]]){ // If one letter doesn't correspond to the pattern
+                        command_found = 0;
                         break;
                     }
 
@@ -131,6 +131,13 @@ int main(void) {
 
             // Go for the next buffer's letter
             indx_buffer++;
+        }
+
+        if (!(command_numbers_activations[0] % 2)){
+            LATGbits.LATG9 ^= 1;
+        }
+        if (!(command_numbers_activations[1] % 2)){
+            LATGbits.LATG9 ^= blink_enabled;
         }
 
         // ------------------------------------ END ------------------------------------
