@@ -113,7 +113,7 @@ void detect_pattern(CircularBuffer *buffer)
 {
     char c1, c2, c3;
 
-    while (buffer->count > 0)
+    while (buffer->count > 3)
     {
         c1 = buffer_peek(buffer, 0);
         uart_debug_send(c1);
