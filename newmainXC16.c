@@ -20,7 +20,7 @@ int missed_deadlines = 0;
 char* commands[] = {
     "LD1", // LED 1
     "LD2", // LED 2
-    '\0'
+    0
 };
 
 int command_numbers_activations[] = {0, 0};
@@ -83,34 +83,34 @@ int main(void) {
         // Fix this part to use the circular buffer correctly -------------------------
 
         int reset_idx = 0;
-        while (commands[reset_idx] != '\0') {
+        while (commands[reset_idx] != 0) {
             stop_check[reset_idx] = 0;
+            command_numbers_activations[reset_idx] = 0;
             reset_idx++;
         }
 
         int indx_buffer = 0;
         while (uart_receive_buffer[indx_buffer] != '\0') { // Check starting from each buffer's letter
             int indx_command = 0;
-            while (commands[indx_command] != '\0'){ // Check each command's words
-                // Skip if we have to wait the end of the next message
+            while (commands[indx_command] != 0) { // Check each command's words
+                // Skip if we have to wait for the end of the next message
                 if (stop_check[indx_command]) {
                     indx_command++;
                     continue;
                 }
 
-                int command_found = commands[indx_command][0] != '\0';
-
+                int command_found = (commands[indx_command][0] != '\0'); // Assume the command is found unless proven otherwise
                 int indx_letter = 0;
-                while (command_found && commands[indx_command][indx_letter + save_indx_letter[indx_command]] != '\0' ) { // Check each command's letter
-                    
-                    if (uart_receive_buffer[indx_buffer + indx_letter] == '\0'){
-                        save_indx_letter[indx_command] = indx_letter;
+                
+                while (command_found && commands[indx_command][indx_letter + save_indx_letter[indx_command]] != '\0') { // Check each command's letter
+                    if (uart_receive_buffer[indx_buffer + indx_letter] == '\0') {
+                        save_indx_letter[indx_command] += indx_letter;
                         stop_check[indx_command] = 1;
                         command_found = 0;
                         break;
                     }
 
-                    if (uart_receive_buffer[indx_buffer + indx_letter] != commands[indx_command][indx_letter + save_indx_letter[indx_command]]){ // If one letter doesn't correspond to the pattern
+                    if (uart_receive_buffer[indx_buffer + indx_letter] != commands[indx_command][indx_letter + save_indx_letter[indx_command]]) { // If one letter doesn't match
                         command_found = 0;
                         break;
                     }
@@ -118,10 +118,16 @@ int main(void) {
                     // Go for the next command's letter
                     indx_letter++;
                 }
-                if (!stop_check[indx_command] && save_indx_letter[indx_command] != 0){
+
+                if (!stop_check[indx_command] && save_indx_letter[indx_command] != 0) {
                     save_indx_letter[indx_command] = 0;
+
+                    if (!command_found){
+                        indx_command--;
+                    }
                 }
-                if(command_found && !stop_check[indx_command]){
+
+                if (command_found && !stop_check[indx_command]) {
                     command_numbers_activations[indx_command]++;
                 }
 
