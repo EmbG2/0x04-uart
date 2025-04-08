@@ -115,7 +115,6 @@ void uart_config(int URT, int stop_bit, int parity_check){
 void __attribute__((__interrupt__, auto_psv)) _U1RXInterrupt(void) {
     IFS0bits.U1RXIF = 0;
     while (U1STAbits.URXDA && (UART1_producer_index + 2) % BUFFER_SIZE != UART1_consumer_index) {
-        
         UART1_receive_buffer[UART1_producer_index] = U1RXREG;
         UART1_producer_index = (UART1_producer_index + 1) % BUFFER_SIZE;
     }
@@ -194,7 +193,7 @@ void __attribute__((__interrupt__, auto_psv)) _U2RXInterrupt(void) {
                 UART_receive[count++] = UART1_receive_buffer[UART1_consumer_index];
                 UART1_consumer_index = (UART1_consumer_index + 1) % BUFFER_SIZE;
             }
-            UART_receive[count + 1] = '\0';
+            UART_receive[count] = 0;
             break;
             
         case URT2:
@@ -202,7 +201,7 @@ void __attribute__((__interrupt__, auto_psv)) _U2RXInterrupt(void) {
                 UART_receive[count++] = UART2_receive_buffer[UART2_consumer_index];
                 UART2_consumer_index = (UART2_consumer_index + 1) % BUFFER_SIZE;
             }
-            UART_receive[count + 1] = '\0';
+            UART_receive[count] = 0;
             break;
             
         default:
