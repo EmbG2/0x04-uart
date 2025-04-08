@@ -33,27 +33,11 @@
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
-#define URT1 1
-#define URT2 2
+#define UART_1 1
+#define UART_2 2
 
-/** @brief System clock frequency in Hz. */
-#define FCY 72000000UL
-
-/** @brief UART baud rate. */
-#define BAUDRATE 9600
-/** @brief Baud Rate Generator value calculation. */
-#define BRGVAL (FCY / BAUDRATE) / 16 - 1
-
-/** @brief Number of registers per buffer section. */
-#define REGISTER_BUFFER_SIZE 4
-/** @brief Total buffer size for UART reception. This formula ensures the buffer size is always a multiple of REGISTER_BUFFER_SIZE while maintaining the required time margin for data reception. */
-#define BUFFER_SIZE (((BAUDRATE / 10) * 2 + REGISTER_BUFFER_SIZE - 1) / REGISTER_BUFFER_SIZE * REGISTER_BUFFER_SIZE)
-
-// TODO Insert declarations or function prototypes (right here) to leverage 
-// live documentation
-void uart_config(int UART, int stop_bit, int parity_check);
-int uart_receive(int UART, char* UART_receive);
-int uart_transmit(int UART, char* UART_transmit_buffer, int UART_transmit__buffer_size);
+void UART_Init(unsigned char uart);
+void UART_SendChar(unsigned char uart, char data);
 
 // interrupt function declarations
 extern void __attribute__((__interrupt__, auto_psv)) _U1RXInterrupt(void);

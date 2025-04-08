@@ -60,88 +60,81 @@ void uart_debug_send(char c) {
 }
 
 
-//void detect_pattern(CircularBuffer *buffer)
-//{
-//    char temp[10];
-//    int match_found = 0;
-//    while (buffer->count > 0)
-//    {
-//        for (int i = 0; i < buffer->pattern_count; i++)
-//        {
-//            int pattern_len = 0;
-//            while (buffer->patterns[i][pattern_len] != '\0')
-//            {
-//                pattern_len++;
-//            }
-//
-//            int j = 0;
-//            int valid_pattern = 1;
-//
-//            for (; j < pattern_len; j++)
-//            {
-//                if (buffer_peek(buffer, j) != buffer->patterns[i][j])
-//                {
-//                    valid_pattern = 0;
-//                    break;
-//                }
-//            }
-//
-//            if (valid_pattern)
-//            {
-//                for (int k = 0; k < pattern_len; k++)
-//                {
-//                    buffer_read(buffer, &temp[k]);
-//                }
-//                buffer->flags[i] = 1;
-//                match_found = 1;
-//                LATGbits.LATG9 ^= 1;
-//                break;
-//            }
-//        }
-//
-//        if (!match_found)
-//        {
-//            buffer_read(buffer, temp);
-//            LATAbits.LATA0 ^= 1;
-//        }
-//
-//        match_found = 0;
-//    }
-//}
-
 void detect_pattern(CircularBuffer *buffer)
 {
-    char c1, c2, c3;
-
-    while (buffer->count > 3)
+    char temp[10];
+    int match_found = 0;
+    while (buffer->count > 2)
     {
-        c1 = buffer_peek(buffer, 0);
-        uart_debug_send(c1);
-
-        c2 = buffer_peek(buffer, 1);
-        uart_debug_send(c2);
-
-        c3 = buffer_peek(buffer, 2);
-        uart_debug_send(c3);
-
-        if (c1 == 'L' && c2 == 'D' && c3 == '1')
+        for (int i = 0; i < buffer->pattern_count; i++)
         {
-            buffer_read(buffer, &c1);
-            buffer_read(buffer, &c2);
-            buffer_read(buffer, &c3);
-            LATGbits.LATG9 ^= 1;
-            return;
+            int pattern_len = 0;
+            while (buffer->patterns[i][pattern_len] != '\0')
+            {
+                pattern_len++;
+            }
+
+            int j = 0;
+            int valid_pattern = 1;
+
+            for (; j < pattern_len; j++)
+            {
+                if (buffer_peek(buffer, j) != buffer->patterns[i][j])
+                {
+                    valid_pattern = 0;
+                    break;
+                }
+            }
+
+            if (valid_pattern)
+            {
+                for (int k = 0; k < pattern_len; k++)
+                {
+                    buffer_read(buffer, &temp[k]);
+                }
+                buffer->flags[i] = 1;
+                match_found = 1;
+                break;
+            }
         }
 
-        if (c1 == 'L' && c2 == 'D' && c3 == '2')
+        if (!match_found)
         {
-            buffer_read(buffer, &c1);
-            buffer_read(buffer, &c2);
-            buffer_read(buffer, &c3);
-            LATGbits.LATG9 ^= 1;
-            return;
+            buffer_read(buffer, temp);
         }
-        LATAbits.LATA0 ^= 1;
-        buffer_read(buffer, &c1); // discard first character if no match
+
+        match_found = 0;
     }
 }
+
+//void detect_pattern(CircularBuffer *buffer)
+//{
+//    char c1, c2, c3;
+//
+//    while (buffer->count > 2)
+//    {
+//        c1 = buffer_peek(buffer, 0);
+//        c2 = buffer_peek(buffer, 1);
+//        c3 = buffer_peek(buffer, 2);
+//
+//        if (c1 == 'L' && c2 == 'D' && c3 == '1')
+//        {
+//            buffer_read(buffer, &c1);
+//            buffer_read(buffer, &c2);
+//            buffer_read(buffer, &c3);
+//            LATGbits.LATG9 ^= 1;
+//            return;
+//        }
+//
+//        if (c1 == 'L' && c2 == 'D' && c3 == '2')
+//        {
+//            buffer_read(buffer, &c1);
+//            buffer_read(buffer, &c2);
+//            buffer_read(buffer, &c3);
+//            LATAbits.LATA0 ^= 1;
+//            return;
+//        }
+//        
+//        buffer_read(buffer, &c1); // discard first character if no match
+//    }
+//}
