@@ -93,7 +93,7 @@ int main(void) {
                 reset_idx++;
             }
 
-            uart_transmit(URT1, uart_receive_buffer);
+            uart_transmit(URT1, uart_receive_buffer, char_count);
             
             int indx_buffer = 0;
             while (uart_receive_buffer[indx_buffer] != '\0') { // Check starting from each buffer's letter
@@ -116,8 +116,8 @@ int main(void) {
                             break;
                         }
 
-                        U1TXREG = uart_receive_buffer[indx_buffer + indx_letter];
-                        U1TXREG = commands[indx_command][indx_letter + save_indx_letter[indx_command]];
+                        //U1TXREG = uart_receive_buffer[indx_buffer + indx_letter];
+                        //U1TXREG = commands[indx_command][indx_letter + save_indx_letter[indx_command]];
                         if (uart_receive_buffer[indx_buffer + indx_letter] != commands[indx_command][indx_letter + save_indx_letter[indx_command]]) { // If one letter doesn't match
                             command_found = 0;
 
