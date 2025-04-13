@@ -57,7 +57,7 @@ int main(void) {
     RPOR0bits.RP64R     = 1;        // UART 1 -> port 1, UART 2 -> port 3
     RPINR18bits.U1RXR   = 75;
     
-    uart_config(URT1, 1, 00);
+    uart_config(URT1, 0, 0);
     
     U1TXREG             = 'G';      // Send 'G' if everything works
 
@@ -81,77 +81,82 @@ int main(void) {
         char_count = (char_count + uart_receive(URT1, uart_receive_buffer)) % 100;
         // Fix this part to use the circular buffer correctly -------------------------
 
-        // Reset stop_check array
-        int reset_idx = 0;
-        while (commands[reset_idx] != 0) {
-            stop_check[reset_idx] = 0;
-            command_numbers_activations[reset_idx] = 0;
-            reset_idx++;
+        int skip_actions = 0;
+        if (uart_receive_buffer[0] == '\0') {
+            skip_actions = 1;
         }
-
-        int indx_buffer = 0;
-        while (uart_receive_buffer[indx_buffer] != '\0') { // Check starting from each buffer's letter
-            int indx_command = 0;
-            U1TXREG = 'A';
-            while (commands[indx_command] != 0) { // Check each command's words
-                // Skip if we have to wait for the end of the next message
-                if (stop_check[indx_command]) {
-                    indx_command++;
-                    continue;
-                }
-
-                int command_found = (commands[indx_command][0] != 0); // Assume the command is found unless proven otherwise
-                int indx_letter = 0;
-                
-                U1TXREG = '3';
-                while (command_found && commands[indx_command][indx_letter + save_indx_letter[indx_command]] != 0) { // Check each command's letter
-                    if (uart_receive_buffer[indx_buffer + indx_letter] == 0) {
-                        save_indx_letter[indx_command] += indx_letter;
-                        stop_check[indx_command] = 1;
-                        command_found = 0;
-                        break;
-                    }
-                    U1TXREG = uart_receive_buffer[indx_buffer + indx_letter];
-
-                    if (uart_receive_buffer[indx_buffer + indx_letter] != commands[indx_command][indx_letter + save_indx_letter[indx_command]]) { // If one letter doesn't match
-                        command_found = 0;
-                        U1TXREG = 's';
-                        break;
-                    }
-
-                    // Go for the next command's letter
-                    indx_letter++;
-                }
-
-                if (!stop_check[indx_command] && save_indx_letter[indx_command] != 0) {
-                    save_indx_letter[indx_command] = 0;
-
-                    if (!command_found){
-                        indx_command--;
-                    }
-                }
-
-                if (command_found && !stop_check[indx_command]) {
-                    command_numbers_activations[indx_command]++;
-                }
-
-                // Go for the next command's word
-                indx_command++;
+        if (!skip_actions) {
+            // Reset stop_check array
+            int reset_idx = 0;
+            while (commands[reset_idx] != 0) {
+                stop_check[reset_idx] = 0;
+                reset_idx++;
             }
 
-            // Go for the next buffer's letter
-            indx_buffer++;
+            uart_transmit(URT1, uart_receive_buffer);
+            
+            int indx_buffer = 0;
+            while (uart_receive_buffer[indx_buffer] != '\0') { // Check starting from each buffer's letter
+                int indx_command = 0;
+                while (commands[indx_command] != 0) { // Check each command's words
+                    // Skip if we have to wait for the end of the next message
+                    if (stop_check[indx_command]) {
+                        indx_command++;
+                        continue;
+                    }
+
+                    int command_found = (commands[indx_command][0] != '\0'); // Assume the command is found unless proven otherwise
+                    int indx_letter = 0;
+
+                    while (command_found && commands[indx_command][indx_letter + save_indx_letter[indx_command]] != '\0') { // Check each command's letter
+                        if (uart_receive_buffer[indx_buffer + indx_letter] == '\0') {
+                            save_indx_letter[indx_command] += indx_letter;
+                            stop_check[indx_command] = 1;
+                            command_found = 0;
+                            break;
+                        }
+
+                        U1TXREG = uart_receive_buffer[indx_buffer + indx_letter];
+                        U1TXREG = commands[indx_command][indx_letter + save_indx_letter[indx_command]];
+                        if (uart_receive_buffer[indx_buffer + indx_letter] != commands[indx_command][indx_letter + save_indx_letter[indx_command]]) { // If one letter doesn't match
+                            command_found = 0;
+
+                            break;
+                        }
+
+                        // Go for the next command's letter
+                        indx_letter++;
+                    }
+
+                    if (!stop_check[indx_command] && save_indx_letter[indx_command] != '\0') {
+                        save_indx_letter[indx_command] = 0;
+
+                        if (!command_found) {
+                            indx_command--;
+                        }
+                    }
+
+                    if (command_found && !stop_check[indx_command]) {
+                        command_numbers_activations[indx_command]++;
+                    }
+
+                    // Go for the next command's word
+                    indx_command++;
+                }
+
+                // Go for the next buffer's letter
+                indx_buffer++;
+            }
         }
 
-        if (!(command_numbers_activations[0] % 2) && command_numbers_activations[0] != 0){
+        if (!(command_numbers_activations[0] % 2) && command_numbers_activations[0] != 0) {
             LATAbits.LATA0 ^= 1;
+            command_numbers_activations[0] = 0;
         }
-        if (!(command_numbers_activations[1] % 2) && command_numbers_activations[1] != 0){
+        if (!(command_numbers_activations[1] % 2) && command_numbers_activations[1] != 0) {
             LATGbits.LATG9 ^= blink_enabled;
+            command_numbers_activations[1] = 0;
         }
-
-        // ------------------------------------ END ------------------------------------
-
         
         if (send_message[0]){
             char msg[4] = {'C', '=', '0' + (char_count / 10), '0' + (char_count % 10)};
