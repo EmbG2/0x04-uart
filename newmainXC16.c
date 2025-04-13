@@ -72,13 +72,14 @@ int main(void) {
         algorithm();                // Wait 7ms
         
         a++;
-        if (blink_enabled && a >= 20) {
+        if (blink_enabled && a >= 100) {
             a = 0;
             LATGbits.LATG9 ^= 1;
         }
 
         char* uart_receive_buffer;
-        char_count = (char_count + uart_receive(URT1, uart_receive_buffer)) % 100;
+        int actual_number_of_charcaters = uart_receive(URT1, uart_receive_buffer);
+        char_count = (char_count + actual_number_of_charcaters) % 100;
         // Fix this part to use the circular buffer correctly -------------------------
 
         int skip_actions = 0;
@@ -93,7 +94,7 @@ int main(void) {
                 reset_idx++;
             }
 
-            uart_transmit(URT1, uart_receive_buffer, char_count);
+            uart_transmit(URT1, uart_receive_buffer, actual_number_of_charcaters);
             
             int indx_buffer = 0;
             while (uart_receive_buffer[indx_buffer] != '\0') { // Check starting from each buffer's letter
@@ -149,13 +150,13 @@ int main(void) {
             }
         }
 
-        if (!(command_numbers_activations[0] % 2) && command_numbers_activations[0] != 0) {
+        while (command_numbers_activations[0] != 0) {
             LATAbits.LATA0 ^= 1;
-            command_numbers_activations[0] = 0;
+            command_numbers_activations[0]--;
         }
-        if (!(command_numbers_activations[1] % 2) && command_numbers_activations[1] != 0) {
-            LATGbits.LATG9 ^= blink_enabled;
-            command_numbers_activations[1] = 0;
+        while (command_numbers_activations[1] != 0) {
+            blink_enabled ^= 1;
+            command_numbers_activations[1]--;
         }
         
         if (send_message[0]){
