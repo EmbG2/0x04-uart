@@ -48,7 +48,15 @@ build CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/Universit
   DEFINES = -DXPRJ_default=default
   DEP_FILE = CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/newmainXC16.c.o.d
   FLAGS = -g -mcpu=33EP512MU810 -O0 -msmart-io=1 -Wall -msfr-warn=off -mdfp=/Users/gianmarco/.mchp_packs/Microchip/dsPIC33E-GM-GP-MC-GU-MU_DFP/1.5.258/xc16
-  INCLUDES = -I/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/cmake/uart/default/../../..
+  OBJECT_DIR = CMakeFiles/uart_default_default_XC16_compile.dir
+  OBJECT_FILE_DIR = CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart
+  TARGET_COMPILE_PDB = CMakeFiles/uart_default_default_XC16_compile.dir/
+  TARGET_PDB = ""
+
+build CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/parser.c.o: C_COMPILER__uart_default_default_XC16_compile_unscanned_ /Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/parser.c || cmake_object_order_depends_target_uart_default_default_XC16_compile
+  DEFINES = -DXPRJ_default=default
+  DEP_FILE = CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/parser.c.o.d
+  FLAGS = -g -mcpu=33EP512MU810 -O0 -msmart-io=1 -Wall -msfr-warn=off -mdfp=/Users/gianmarco/.mchp_packs/Microchip/dsPIC33E-GM-GP-MC-GU-MU_DFP/1.5.258/xc16
   OBJECT_DIR = CMakeFiles/uart_default_default_XC16_compile.dir
   OBJECT_FILE_DIR = CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart
   TARGET_COMPILE_PDB = CMakeFiles/uart_default_default_XC16_compile.dir/
@@ -58,7 +66,6 @@ build CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/Universit
   DEFINES = -DXPRJ_default=default
   DEP_FILE = CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/timer.c.o.d
   FLAGS = -g -mcpu=33EP512MU810 -O0 -msmart-io=1 -Wall -msfr-warn=off -mdfp=/Users/gianmarco/.mchp_packs/Microchip/dsPIC33E-GM-GP-MC-GU-MU_DFP/1.5.258/xc16
-  INCLUDES = -I/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/cmake/uart/default/../../..
   OBJECT_DIR = CMakeFiles/uart_default_default_XC16_compile.dir
   OBJECT_FILE_DIR = CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart
   TARGET_COMPILE_PDB = CMakeFiles/uart_default_default_XC16_compile.dir/
@@ -68,7 +75,6 @@ build CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/Universit
   DEFINES = -DXPRJ_default=default
   DEP_FILE = CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/uart.c.o.d
   FLAGS = -g -mcpu=33EP512MU810 -O0 -msmart-io=1 -Wall -msfr-warn=off -mdfp=/Users/gianmarco/.mchp_packs/Microchip/dsPIC33E-GM-GP-MC-GU-MU_DFP/1.5.258/xc16
-  INCLUDES = -I/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/cmake/uart/default/../../..
   OBJECT_DIR = CMakeFiles/uart_default_default_XC16_compile.dir
   OBJECT_FILE_DIR = CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart
   TARGET_COMPILE_PDB = CMakeFiles/uart_default_default_XC16_compile.dir/
@@ -79,7 +85,7 @@ build CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/Universit
 #############################################
 # Object library uart_default_default_XC16_compile
 
-build uart_default_default_XC16_compile: phony CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/newmainXC16.c.o CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/timer.c.o CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/uart.c.o
+build uart_default_default_XC16_compile: phony CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/newmainXC16.c.o CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/parser.c.o CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/timer.c.o CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/uart.c.o
 
 # =============================================================================
 # Object build statements for EXECUTABLE target uart_default_default.elf
@@ -98,7 +104,7 @@ build cmake_object_order_depends_target_uart_default_default.elf: phony || cmake
 #############################################
 # Link the executable uart_default_default.elf
 
-build uart_default_default.elf /Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/out/uart/default.elf: C_EXECUTABLE_LINKER__uart_default_default.2eelf_ CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/newmainXC16.c.o CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/timer.c.o CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/uart.c.o || uart_default_default_XC16_compile
+build uart_default_default.elf /Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/out/uart/default.elf: C_EXECUTABLE_LINKER__uart_default_default.2eelf_ CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/newmainXC16.c.o CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/parser.c.o CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/timer.c.o CMakeFiles/uart_default_default_XC16_compile.dir/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/uart.c.o || uart_default_default_XC16_compile
   LINK_FLAGS = -g -mcpu=33EP512MU810 -Wl,--script=p33EP512MU810.gld,--local-stack,--defsym=__MPLAB_BUILD=1,--stack=16,--check-sections,--data-init,--pack-data,--handles,--isr,--no-gc-sections,--fill-upper=0,--stackguard=16,--library-path=/Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/cmake/uart/default/../../..,--no-force-link,--smart-io,--report-mem,--memorysummary,memoryfile.xml -mdfp=/Users/gianmarco/.mchp_packs/Microchip/dsPIC33E-GM-GP-MC-GU-MU_DFP/1.5.258/xc16
   OBJECT_DIR = CMakeFiles/uart_default_default.elf.dir
   POST_BUILD = cd /Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/_build/uart/default && /Users/gianmarco/.mplab/app-finder/apps/cmake/v3.31.6/cmake-3.31.6-macos-universal/CMake.app/Contents/bin/cmake -E make_directory /Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/cmake/uart/default/../../../out/uart && /Users/gianmarco/.mplab/app-finder/apps/cmake/v3.31.6/cmake-3.31.6-macos-universal/CMake.app/Contents/bin/cmake -E copy uart_default_default.elf /Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/cmake/uart/default/../../../out/uart/default.elf

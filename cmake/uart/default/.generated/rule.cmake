@@ -40,7 +40,6 @@ function(uart_default_default_XC16_compile_rule target)
     list(REMOVE_ITEM options "")
     target_compile_options(${target} PRIVATE "${options}")
     target_compile_definitions(${target} PRIVATE "XPRJ_default=default")
-    target_include_directories(${target} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../..")
 endfunction()
 function(uart_default_link_rule target)
     set(options

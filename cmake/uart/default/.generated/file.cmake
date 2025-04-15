@@ -4,6 +4,7 @@ set(uart_default_default_XC16_FILE_TYPE_assemblePreproc)
 set_source_files_properties(${uart_default_default_XC16_FILE_TYPE_assemblePreproc} PROPERTIES LANGUAGE C)
 set(uart_default_default_XC16_FILE_TYPE_compile
     "${CMAKE_CURRENT_SOURCE_DIR}/../../../newmainXC16.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../../parser.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/../../../timer.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/../../../uart.c")
 set(uart_default_default_XC16_FILE_TYPE_link)

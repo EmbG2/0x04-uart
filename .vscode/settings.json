@@ -1,0 +1,6 @@
+{
+    "mplab.clangd.arguments": [
+        "--compile-commands-dir=${cwd}Users/gianmarco/University/EmbeddedSystems/MPLABXProjects/0x04-uart/_build/uart/default"
+    ],
+    "C_Cpp.intelliSenseEngine": "disabled"
+}

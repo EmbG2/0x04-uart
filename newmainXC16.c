@@ -9,10 +9,11 @@
 #include "xc.h"
 #include "timer.h"
 #include "uart.h"
-
+#include "parser.h"
 
 int a = 0;
 int blink_enabled = 1;
+int send_message[2] = {0, 0};
 
 int char_count = 0;
 int missed_deadlines = 0;
@@ -26,8 +27,6 @@ char* commands[] = {
 int command_numbers_activations[] = {0, 0};
 int save_indx_letter[] = {0, 0};
 int stop_check[] = {0, 0};
-
-int send_message[2] = {0, 0};
 
 void algorithm();
 
@@ -77,12 +76,13 @@ int main(void) {
             LATGbits.LATG9 ^= 1;
         }
 
-        char* uart_receive_buffer;
+        char uart_receive_buffer[BUFFER_SIZE];
         int actual_number_of_charcaters = uart_receive(URT1, uart_receive_buffer);
         char_count = (char_count + actual_number_of_charcaters) % 100;
-        // Fix this part to use the circular buffer correctly -------------------------
 
-        int skip_actions = 0;
+        process_uart_commands(uart_receive_buffer, commands, command_numbers_activations, save_indx_letter, stop_check);
+
+        /* int skip_actions = 0;
         if (uart_receive_buffer[0] == '\0') {
             skip_actions = 1;
         }
@@ -94,8 +94,6 @@ int main(void) {
                 reset_idx++;
             }
 
-            uart_transmit(URT1, uart_receive_buffer, actual_number_of_charcaters);
-            
             int indx_buffer = 0;
             while (uart_receive_buffer[indx_buffer] != '\0') { // Check starting from each buffer's letter
                 int indx_command = 0;
@@ -117,8 +115,6 @@ int main(void) {
                             break;
                         }
 
-                        //U1TXREG = uart_receive_buffer[indx_buffer + indx_letter];
-                        //U1TXREG = commands[indx_command][indx_letter + save_indx_letter[indx_command]];
                         if (uart_receive_buffer[indx_buffer + indx_letter] != commands[indx_command][indx_letter + save_indx_letter[indx_command]]) { // If one letter doesn't match
                             command_found = 0;
 
@@ -148,17 +144,18 @@ int main(void) {
                 // Go for the next buffer's letter
                 indx_buffer++;
             }
-        }
+        }  */
 
-        while (command_numbers_activations[0] != 0) {
+
+        while (command_numbers_activations[0] > 0) {
             LATAbits.LATA0 ^= 1;
             command_numbers_activations[0]--;
         }
-        while (command_numbers_activations[1] != 0) {
+        while (command_numbers_activations[1] > 0) {
             blink_enabled ^= 1;
             command_numbers_activations[1]--;
         }
-        
+
         if (send_message[0]){
             char msg[4] = {'C', '=', '0' + (char_count / 10), '0' + (char_count % 10)};
             uart_transmit(URT1, msg, 4);
