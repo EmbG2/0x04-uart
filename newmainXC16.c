@@ -8,7 +8,7 @@ CircularBuffer main_buffer_2;
 CircularBuffer sec_buffer_1;
 CircularBuffer sec_buffer_2;
 
-char *patterns[] = {"LD1", "LD2"};
+char *patterns[] = {"$RATE,5*", "$RATE,0*"};
 char c;
 int flag_a = 0;
 int flag_b = 0;
@@ -21,7 +21,7 @@ int main(void) {
 
     // Initialize UARTs and send data
     UART_Init(UART_1);
-    UART_SendChar(UART_1, 'C');
+    send_uart_char(UART_1, 'C');
     
     buffer_init(&main_buffer_1, patterns, 2);
     buffer_init(&sec_buffer_1, patterns, 2);
@@ -48,7 +48,7 @@ int main(void) {
 
 //    while (1){
 //         while (buffer_read(&main_buffer_1, &c)) {
-//             UART_SendChar(UART_1, c);
+//             send_uart_char(UART_1, c);
 //             tmr_wait_ms_3(TIMER1, 500);
 //         }
 //    };

@@ -204,13 +204,13 @@ External Symbols in Program Memory (by address):
                   0x000cf4                  _uart_debug_send
                   0x000d0c                  _detect_pattern
                   0x000df4                  _UART_Init
-                  0x000e70                  _UART_SendChar
+                  0x000e70                  _send_uart_char
                   0x000e94                  _main
 
 External Symbols in Program Memory (by name):
 
                   0x000df4                  _UART_Init
-                  0x000e70                  _UART_SendChar
+                  0x000e70                  _send_uart_char
                   0x000392                  __DefaultInterrupt
                   0x0002fa                  __U1RXInterrupt
                   0x000348                  __U2RXInterrupt
@@ -3342,7 +3342,7 @@ __c30_signature
                   0x000d0c                  _detect_pattern
  .text            0x000df4         0xa0 build/default/debug/uart.o
                   0x000df4                  _UART_Init
-                  0x000e70                  _UART_SendChar
+                  0x000e70                  _send_uart_char
  .text            0x000e94         0x62 build/default/debug/newmainXC16.o
                   0x000e94                  _main
 

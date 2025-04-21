@@ -37,7 +37,7 @@
 #define UART_2 2
 
 void UART_Init(unsigned char uart);
-void UART_SendChar(unsigned char uart, char data);
+void send_uart_char(unsigned char uart, char data);
 
 // interrupt function declarations
 extern void __attribute__((__interrupt__, auto_psv)) _U1RXInterrupt(void);
